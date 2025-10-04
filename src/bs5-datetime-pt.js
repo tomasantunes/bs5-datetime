@@ -1,14 +1,14 @@
 (function(){
   const DEFAULTS = {
-    format: "YYYY-MM-DD HH:mm",
+    format: "DD/MM/YYYY HH:mm",
     showSeconds: false,
     use24Hour: true,
     startDay: 1 // 0 = Sunday, 1 = Monday
   };
 
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
   ];
 
   function pad(n, len=2){ return String(n).padStart(len, '0'); }
@@ -20,17 +20,17 @@
     const D = pad(d.getDate());
     const H = pad(d.getHours());
     const m = pad(d.getMinutes());
-    if(opts.format === "YYYY-MM-DD HH:mm") return `${Y}-${M}-${D} ${H}:${m}`;
+    if(opts.format === "DD/MM/YYYY HH:mm") return `${D}/${M}/${Y} ${H}:${m}`;
     return `${Y}-${M}-${D} ${H}:${m}`;
   }
 
   function parseInputToDate(str){
-    // lenient parse: accepts YYYY-MM-DD[ T]HH:MM
+    // lenient parse: accepts DD/MM/YYYY[ T]HH:MM
     if(!str) return null;
-    const re = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2}))?/;
+    const re = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[T\s](\d{1,2}):(\d{1,2}))?/;
     const m = str.match(re);
     if(!m) return null;
-    const Y = Number(m[1]), M = Number(m[2])-1, D = Number(m[3]);
+    const D = Number(m[1]), M = Number(m[2])-1, Y = Number(m[3]);
     const H = m[4] ? Number(m[4]) : 0;
     const Min = m[5] ? Number(m[5]) : 0;
     const date = new Date(Y, M, D, H, Min, 0, 0);
@@ -59,12 +59,12 @@
             </div>
 
             <div class="dtp-time p-2 border-top d-flex gap-2 align-items-center">
-                <label class="mb-0 small">Time</label>
+                <label class="mb-0 small">Hora</label>
                 <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="Hours" style="width:4.5rem">
                 <span>:</span>
                 <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="Minutes" style="width:4.5rem">
                 <div class="ms-auto">
-                <button class="btn btn-sm btn-primary dtp-apply">Apply</button>
+                <button class="btn btn-sm btn-primary dtp-apply">Aplicar</button>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
     }
 
     function renderWeekdays(){
-      const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const names = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
       popup._weekdays.innerHTML = '';
       for(let i=0;i<7;i++){
         const idx = (opt.startDay + i) % 7;
