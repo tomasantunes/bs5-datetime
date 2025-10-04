@@ -71,7 +71,7 @@ function createTemplate() {
   document.body.appendChild(tpl);
 }
 
-function createDatetimePicker(input, toggle, options={}) {
+function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   const opt = Object.assign({}, DEFAULTS, options);
   const tpl = document.getElementById('dtp-template');
   if(!tpl) throw new Error('Template not found');
@@ -195,6 +195,7 @@ function createDatetimePicker(input, toggle, options={}) {
     if(!selected) selected = new Date(current.getFullYear(), current.getMonth(), current.getDate(), h, m, 0, 0);
     selected.setHours(h, m, 0, 0);
     input.value = formatDate(selected, opt);
+    onChangeCallback && onChangeCallback(input.value);
     input.dispatchEvent(new Event('change', {bubbles:true}));
     close();
   }
@@ -262,19 +263,33 @@ function createDatetimePicker(input, toggle, options={}) {
       if(e.key === 'Escape') close();
       if(e.key === 'Enter'){
         const parsed = parseInputToDate(input.value);
-        if(parsed){ selected = parsed; input.value = formatDate(parsed, opt); input.dispatchEvent(new Event('change',{bubbles:true})); }
+        if(parsed){ 
+          selected = parsed; 
+          input.value = formatDate(parsed, opt);
+          input.dispatchEvent(new Event('change',{bubbles:true}));
+          onChangeCallback && onChangeCallback(input.value);
+        }
         close();
       }
     });
   }
 
-  
+  input.addEventListener('input', (e) => {
+    const parsed = parseInputToDate(input.value);
+    if (parsed) selected = parsed; // update internal date
+    onChangeCallback && onChangeCallback(input.value);
+  });
 
   // public api
   const api = {
     open, close,
     getDate: ()=>selected,
-    setDate: (d)=>{ if(!(d instanceof Date)) d = parseInputToDate(d); selected = d; input.value = selected ? formatDate(selected, opt) : ''; },
+    setDate: (d) => {
+      if (!(d instanceof Date)) d = parseInputToDate(d);
+      selected = d;
+      input.value = selected ? formatDate(selected, opt) : '';
+      onChangeCallback && onChangeCallback(input.value);
+    },
     destroy: ()=>{
       if(popup){ popup.remove(); popup = null; }
       input.removeEventListener('focus', open);

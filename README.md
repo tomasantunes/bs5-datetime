@@ -11,10 +11,19 @@ Bootstrap 5 DateTime Picker in Vanilla JS (Written by AI)
 ```
 <link rel="stylesheet" href="bs5-datetime.min.css">
 <script src="bs5-datetime.min.js"></script>
+
+<div class="input-group">
+    <input id="dtp" class="form-control">
+    <button class="btn btn-outline-secondary" id="dtpToggle">
+        <i class="fa-solid fa-calendar-days"></i>
+    </button>
+</div>
+
 <script>
     const input = document.getElementById('dtp');
+    const toggle = document.getElementById('dtpToggle');
     createDatetimeTemplate();
-    const picker = createDatetimePicker(input);
+    const picker = createDatetimePicker(input, toggle);
 </script>
 ```
 

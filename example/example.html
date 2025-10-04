@@ -24,31 +24,19 @@
         </div>
       </div>
     </div>
-
-    <hr>
-    <h5>Demo controls</h5>
-    <div class="row gy-2">
-      <div class="col-12">
-        <button id="setNow" class="btn btn-primary">Set to now</button>
-        <button id="clear" class="btn btn-outline-secondary">Clear</button>
-      </div>
-    </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" integrity="sha512-6BTOlkauINO65nLhXhthZMtepgJSghyimIalb+crKRPhvhmsCdnIuGcVbR5/aQY2A+260iC1OPy1oCdB6pSSwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="../dist/bs5-datetime.min.js"></script>
   <script>
     // Demo init when loaded
-    document.addEventListener('DOMContentLoaded', ()=>{
+    document.addEventListener('DOMContentLoaded', () => {
+
       const input = document.getElementById('dtp');
+      const toggle = document.getElementById('dtpToggle');
       createDatetimeTemplate();
-      const picker = createDatetimePicker(input, {startDay:1});
-      document.getElementById('setNow').addEventListener('click', ()=>{
-        picker.setDate(new Date());
-      });
-      document.getElementById('clear').addEventListener('click', ()=>{
-        picker.setDate('');
-      });
+      const picker = createDatetimePicker(input, toggle);
+      
     });
   </script>
 </body>
