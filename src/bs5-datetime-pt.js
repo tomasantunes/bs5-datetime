@@ -285,19 +285,6 @@
   }
 
   // expose globally
+  window.createDatetimeTemplate = createTemplate;
   window.createDatetimePicker = createDatetimePicker;
-
-  // Demo init when loaded
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const input = document.getElementById('dtp');
-    createTemplate();
-    const picker = createDatetimePicker(input, {startDay:1});
-    document.getElementById('setNow').addEventListener('click', ()=>{
-      picker.setDate(new Date());
-    });
-    document.getElementById('clear').addEventListener('click', ()=>{
-      picker.setDate('');
-    });
-  });
-
 })();
