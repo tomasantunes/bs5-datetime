@@ -1,14 +1,10 @@
 const DEFAULTS = {
   format: "YYYY-MM-DD HH:mm",
+  showTime: true,
   showSeconds: false,
   use24Hour: true,
   startDay: 1 // 0 = Sunday, 1 = Monday
 };
-
-const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
 
 function pad(n, len=2){ return String(n).padStart(len, '0'); }
 
@@ -20,6 +16,9 @@ function formatDate(d, opts){
   const H = pad(d.getHours());
   const m = pad(d.getMinutes());
   if(opts.format === "YYYY-MM-DD HH:mm") return `${Y}-${M}-${D} ${H}:${m}`;
+  if(opts.format === "YYYY-MM-DD") return `${Y}-${M}-${D}`;
+  if(opts.format === "MM/DD/YYYY HH:mm") return `${M}/${D}/${Y} ${H}:${m}`;
+  if(opts.format === "MM/DD/YYYY") return `${M}/${D}/${Y}`;
   return `${Y}-${M}-${D} ${H}:${m}`;
 }
 
@@ -47,8 +46,8 @@ function createTemplate() {
           <div class="dtp-header d-flex justify-content-between align-items-center p-2 border-bottom">
               <div class="dtp-month-year fs-6 fw-semibold"></div>
               <div class="dtp-nav">
-              <button type="button" class="btn btn-sm dtp-prev" aria-label="Previous month">‹</button>
-              <button type="button" class="btn btn-sm dtp-next" aria-label="Next month">›</button>
+              <button type="button" class="btn btn-sm dtp-prev" aria-label="${previousMonth}">‹</button>
+              <button type="button" class="btn btn-sm dtp-next" aria-label="${nextMonth}">›</button>
               </div>
           </div>
 
@@ -58,12 +57,12 @@ function createTemplate() {
           </div>
 
           <div class="dtp-time p-2 border-top d-flex gap-2 align-items-center">
-              <label class="mb-0 small">Time</label>
-              <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="Hours" style="width:4.5rem">
+              <label class="mb-0 small">${time}</label>
+              <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${hours}" style="width:4.5rem">
               <span>:</span>
-              <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="Minutes" style="width:4.5rem">
+              <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${minutes}" style="width:4.5rem">
               <div class="ms-auto">
-              <button class="btn btn-sm btn-primary dtp-apply">Apply</button>
+              <button class="btn btn-sm btn-primary dtp-apply">${apply}</button>
               </div>
           </div>
       </div>
@@ -94,6 +93,11 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     popup._minute = popup.querySelector('.dtp-minute');
     popup._apply = popup.querySelector('.dtp-apply');
 
+    // show/hide time
+    if(!opt.showTime){
+      popup.querySelector('.dtp-time').style.display = 'none';
+    }
+
     popup._prev.addEventListener('click', ()=>{ current.setMonth(current.getMonth()-1); render(); });
     popup._next.addEventListener('click', ()=>{ current.setMonth(current.getMonth()+1); render(); });
     popup._apply.addEventListener('click', applyAndClose);
@@ -112,7 +116,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   }
 
   function renderWeekdays(){
-    const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const names = weekDays;
     popup._weekdays.innerHTML = '';
     for(let i=0;i<7;i++){
       const idx = (opt.startDay + i) % 7;

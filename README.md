@@ -10,6 +10,7 @@ Bootstrap 5 DateTime Picker in Vanilla JS (Written by AI)
 
 ```
 <link rel="stylesheet" href="bs5-datetime.min.css">
+<script src="locale-en-us.min.js"></script>
 <script src="bs5-datetime.min.js"></script>
 
 <div class="input-group">

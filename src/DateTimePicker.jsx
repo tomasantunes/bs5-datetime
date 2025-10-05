@@ -8,7 +8,6 @@ export default function DateTimePicker({ value, onChange, defaultValue }) {
 
   useEffect(() => {
     (async () => {
-      // dynamically import JS
       await import("./bs5-datetime.min.js");
 
       // create template once

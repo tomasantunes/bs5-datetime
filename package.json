@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "clean-css": "^5.3.3",
+    "fs-extra": "^11.3.2",
+    "terser": "^5.44.0"
+  },
+  "scripts": {
+    "build": "node build.js"
+  }
+}
