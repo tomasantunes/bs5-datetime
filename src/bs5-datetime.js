@@ -22,7 +22,7 @@ function formatDate(d, opts){
   return `${Y}-${M}-${D} ${H}:${m}`;
 }
 
-function parseInputToDate(str) {
+function parseInputToDate(str, opts={}) {
   if (!str) return null;
 
   const format = opts.format || "YYYY-MM-DD HH:mm";
@@ -80,8 +80,8 @@ function createTemplate() {
           <div class="dtp-header d-flex justify-content-between align-items-center p-2 border-bottom">
               <div class="dtp-month-year fs-6 fw-semibold"></div>
               <div class="dtp-nav">
-              <button type="button" class="btn btn-sm dtp-prev" aria-label="${previousMonth}">‹</button>
-              <button type="button" class="btn btn-sm dtp-next" aria-label="${nextMonth}">›</button>
+              <button type="button" class="btn btn-sm dtp-prev" aria-label="${window.previousMonth}">‹</button>
+              <button type="button" class="btn btn-sm dtp-next" aria-label="${window.nextMonth}">›</button>
               </div>
           </div>
 
@@ -92,13 +92,13 @@ function createTemplate() {
 
           <div class="p-2 border-top d-flex">
               <div class="dtp-time d-flex gap-2 align-items-center">
-                  <label class="mb-0 small">${time}</label>
-                  <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${hours}" style="width:4.5rem">
+                  <label class="mb-0 small">${window.time}</label>
+                  <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${window.hours}" style="width:4.5rem">
                   <span>:</span>
-                  <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${minutes}" style="width:4.5rem">
+                  <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${window.minutes}" style="width:4.5rem">
               </div>
               <div class="ms-auto p-2">
-                  <button class="btn btn-sm btn-primary dtp-apply">${apply}</button>
+                  <button class="btn btn-sm btn-primary dtp-apply">${window.apply}</button>
               </div>
           </div>
       </div>
@@ -149,7 +149,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   }
 
   function renderWeekdays(){
-    const names = weekDays;
+    const names = window.weekDays;
     popup._weekdays.innerHTML = '';
     for(let i=0;i<7;i++){
       const idx = (opt.startDay + i) % 7;
@@ -162,6 +162,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
 
   function render(){
     // show month-year
+    const monthNames = window.monthNames;
     const currentMonth = current.getMonth();
     const month = monthNames[currentMonth];
     const year = current.getFullYear();
@@ -242,7 +243,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   function open(){
     if(!popup) build();
     // parse current input
-    const parsed = parseInputToDate(input.value);
+    const parsed = parseInputToDate(input.value, opt);
     selected = parsed || selected || new Date();
     current = new Date(selected.getFullYear(), selected.getMonth(), 1, selected.getHours(), selected.getMinutes());
     render();
@@ -305,7 +306,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
       if (input.value == "") close();
       if(e.key === 'Escape') close();
       if(e.key === 'Enter'){
-        const parsed = parseInputToDate(input.value);
+        const parsed = parseInputToDate(input.value, opt);
         if(parsed){ 
           selected = parsed; 
           input.value = formatDate(parsed, opt);
@@ -318,7 +319,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   }
 
   input.addEventListener('input', (e) => {
-    const parsed = parseInputToDate(input.value);
+    const parsed = parseInputToDate(input.value, opt);
     if (parsed) selected = parsed; // update internal date
     onChangeCallback && onChangeCallback(input.value);
   });
@@ -328,7 +329,7 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     open, close,
     getDate: ()=>selected,
     setDate: (d) => {
-      if (!(d instanceof Date)) d = parseInputToDate(d);
+      if (!(d instanceof Date)) d = parseInputToDate(d, opt);
       selected = d;
       input.value = selected ? formatDate(selected, opt) : '';
       onChangeCallback && onChangeCallback(input.value);

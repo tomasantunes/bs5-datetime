@@ -48,17 +48,23 @@ async function processFile(srcPath, destDir) {
     const code = await fs.readFile(srcPath, "utf8");
     const result = await minify(code);
     const destPath = path.join(destDir, `${base}.min.js`);
+    const reactDestPath = path.join(destDir, 'examples', 'react-example', `${base}.min.js`);
     await fs.outputFile(destPath, result.code);
+    await fs.outputFile(reactDestPath, result.code);
     console.log(`🌀 Minified JS → ${path.relative(__dirname, destPath)}`);
   } else if (ext === ".css") {
     const css = await fs.readFile(srcPath, "utf8");
     const output = new CleanCSS().minify(css);
     const destPath = path.join(destDir, `${base}.min.css`);
+    const reactDestPath = path.join(destDir, 'examples', 'react-example', `${base}.min.css`);
     await fs.outputFile(destPath, output.styles);
+    await fs.outputFile(reactDestPath, output.styles);
     console.log(`🎨 Minified CSS → ${path.relative(__dirname, destPath)}`);
   } else {
     const destPath = path.join(destDir, path.basename(srcPath));
+    const reactDestPath = path.join(destDir, 'examples', 'react-example', path.basename(srcPath));
     await fs.copy(srcPath, destPath);
+    await fs.copy(srcPath, reactDestPath);
     console.log(`📄 Copied → ${path.relative(__dirname, destPath)}`);
   }
 }
