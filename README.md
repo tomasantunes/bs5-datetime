@@ -37,3 +37,27 @@ const [datetime, setDatetime] = useState(null);
 
 <DateTimePicker defaultValue={datetime} onChange={setDatetime} />
 ```
+
+## Options
+
+The 4th argument of the createDatetimePicker function accepts the following options:
+
+```
+{
+  format: "YYYY-MM-DD HH:mm",
+  showTime: true,
+  showSeconds: false,
+  use24Hour: true,
+  startDay: 1 // 0 = Sunday, 1 = Monday
+}
+```
+
+## Methods
+
+The DateTimePicker has the following methods:
+
+- open()
+- close()
+- getDate()
+- setDate(d)
+- destroy()
