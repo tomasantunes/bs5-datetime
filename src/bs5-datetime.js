@@ -17,24 +17,58 @@ function formatDate(d, opts){
   const m = pad(d.getMinutes());
   if(opts.format === "YYYY-MM-DD HH:mm") return `${Y}-${M}-${D} ${H}:${m}`;
   if(opts.format === "YYYY-MM-DD") return `${Y}-${M}-${D}`;
-  if(opts.format === "MM/DD/YYYY HH:mm") return `${M}/${D}/${Y} ${H}:${m}`;
-  if(opts.format === "MM/DD/YYYY") return `${M}/${D}/${Y}`;
+  if(opts.format === "DD/MM/YYYY HH:mm") return `${D}/${M}/${Y} ${H}:${m}`;
+  if(opts.format === "DD/MM/YYYY") return `${D}/${M}/${Y}`;
   return `${Y}-${M}-${D} ${H}:${m}`;
 }
 
-function parseInputToDate(str){
-  // lenient parse: accepts YYYY-MM-DD[ T]HH:MM
-  if(!str) return null;
-  const re = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2}))?/;
+function parseInputToDate(str) {
+  if (!str) return null;
+
+  const format = opts.format || "YYYY-MM-DD HH:mm";
+  let re, Y, M, D, H = 0, Min = 0;
+
+  switch (format) {
+    case "YYYY-MM-DD HH:mm":
+      re = /^(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{1,2})$/;
+      break;
+    case "YYYY-MM-DD":
+      re = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
+      break;
+    case "DD/MM/YYYY HH:mm":
+      re = /^(\d{1,2})\/(\d{1,2})\/(\d{4})[ T]?(\d{1,2}):(\d{1,2})$/;
+      break;
+    case "DD/MM/YYYY":
+      re = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+      break;
+    default:
+      throw new Error(`Unsupported date format: ${format}`);
+  }
+
   const m = str.match(re);
-  if(!m) return null;
-  const Y = Number(m[1]), M = Number(m[2])-1, D = Number(m[3]);
-  const H = m[4] ? Number(m[4]) : 0;
-  const Min = m[5] ? Number(m[5]) : 0;
+  if (!m) return null;
+
+  // Extract parts depending on format
+  if (format.startsWith("YYYY")) {
+    Y = Number(m[1]);
+    M = Number(m[2]) - 1;
+    D = Number(m[3]);
+    if (m[4]) H = Number(m[4]);
+    if (m[5]) Min = Number(m[5]);
+  } else { // DD/MM/YYYY*
+    D = Number(m[1]);
+    M = Number(m[2]) - 1;
+    Y = Number(m[3]);
+    if (m[4]) H = Number(m[4]);
+    if (m[5]) Min = Number(m[5]);
+  }
+
   const date = new Date(Y, M, D, H, Min, 0, 0);
-  if(isNaN(date)) return null;
+  if (isNaN(date.getTime())) return null;
+
   return date;
 }
+
 
 function createTemplate() {
   if (document.getElementById('dtp-template')) return; // already exists
@@ -56,13 +90,15 @@ function createTemplate() {
               <div class="dtp-days d-flex flex-wrap"></div>
           </div>
 
-          <div class="dtp-time p-2 border-top d-flex gap-2 align-items-center">
-              <label class="mb-0 small">${time}</label>
-              <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${hours}" style="width:4.5rem">
-              <span>:</span>
-              <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${minutes}" style="width:4.5rem">
-              <div class="ms-auto">
-              <button class="btn btn-sm btn-primary dtp-apply">${apply}</button>
+          <div class="p-2 border-top d-flex">
+              <div class="dtp-time d-flex gap-2 align-items-center">
+                  <label class="mb-0 small">${time}</label>
+                  <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${hours}" style="width:4.5rem">
+                  <span>:</span>
+                  <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${minutes}" style="width:4.5rem">
+              </div>
+              <div class="ms-auto p-2">
+                  <button class="btn btn-sm btn-primary dtp-apply">${apply}</button>
               </div>
           </div>
       </div>
@@ -74,6 +110,8 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
   const opt = Object.assign({}, DEFAULTS, options);
   const tpl = document.getElementById('dtp-template');
   if(!tpl) throw new Error('Template not found');
+
+  console.log('Options:', opt);
 
   let popup = null;
   let current = null; // Date shown on calendar (month view)
@@ -92,11 +130,6 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     popup._hour = popup.querySelector('.dtp-hour');
     popup._minute = popup.querySelector('.dtp-minute');
     popup._apply = popup.querySelector('.dtp-apply');
-
-    // show/hide time
-    if(!opt.showTime){
-      popup.querySelector('.dtp-time').style.display = 'none';
-    }
 
     popup._prev.addEventListener('click', ()=>{ current.setMonth(current.getMonth()-1); render(); });
     popup._next.addEventListener('click', ()=>{ current.setMonth(current.getMonth()+1); render(); });
@@ -218,6 +251,12 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     popup.classList.add('show');
     // focus first focusable element in popup
     popup.querySelector('.dtp-hour').focus();
+
+    // show/hide time
+    if(!opt.showTime){
+      console.log('hiding time');
+      popup.querySelector('.dtp-time').setAttribute('style', 'display:none !important');
+    }
   }
 
   function close(){

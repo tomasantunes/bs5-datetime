@@ -16,7 +16,7 @@
       <div class="col-md-3">
       <label for="dtp" class="form-label">Pick date &amp; time</label>
         <div class="input-group">
-          <input id="dtp" class="form-control" placeholder="YYYY-MM-DD HH:MM" autocomplete="off">
+          <input id="dtp" class="form-control" autocomplete="off">
           <button class="btn btn-outline-secondary" id="dtpToggle" type="button" aria-label="Toggle datetime picker">
             <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
             <span class="visually-hidden">Toggle datetime picker</span>
@@ -32,12 +32,10 @@
   <script>
     // Demo init when loaded
     document.addEventListener('DOMContentLoaded', () => {
-
       const input = document.getElementById('dtp');
       const toggle = document.getElementById('dtpToggle');
       createDatetimeTemplate();
-      const picker = createDatetimePicker(input, toggle);
-      
+      const picker = createDatetimePicker(input, toggle, null, {});
     });
   </script>
 </body>
