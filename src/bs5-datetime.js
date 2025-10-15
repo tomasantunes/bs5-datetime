@@ -6,6 +6,44 @@ const DEFAULTS = {
   startDay: 1 // 0 = Sunday, 1 = Monday
 };
 
+const LOCALES = {
+  'en-us': {
+    monthNames: [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    previousMonth: "Previous month",
+    nextMonth: "Next month",
+    time: "Time",
+    applyDatetime: "Apply",
+    hours: "Hours",
+    minutes: "Minutes",
+    weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  },
+  'pt-pt': {
+    monthNames: [
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ],
+    previousMonth: "Mês anterior",
+    nextMonth: "Mês seguinte",
+    time: "Hora",
+    applyDatetime: "Aplicar",
+    hours: "Horas",
+    minutes: "Minutos",
+    weekDays: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+  }
+};
+
+function setDatetimeLocale(locale) {
+  const loc = LOCALES[locale];
+  if (!loc) {
+    console.warn(`Locale not found: ${locale}`);
+    return;
+  }
+  Object.assign(window, loc);
+}
+
 function pad(n, len=2){ return String(n).padStart(len, '0'); }
 
 function formatDate(d, opts){
@@ -98,7 +136,7 @@ function createTemplate() {
                   <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${window.minutes}" style="width:4.5rem">
               </div>
               <div class="ms-auto p-2">
-                  <button class="btn btn-sm btn-primary dtp-apply">${window.apply}</button>
+                  <button class="btn btn-sm btn-primary dtp-apply">${window.applyDatetime}</button>
               </div>
           </div>
       </div>
@@ -346,5 +384,6 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
 }
 
 // expose globally
+window.setDatetimeLocale = setDatetimeLocale;
 window.createDatetimeTemplate = createTemplate;
 window.createDatetimePicker = createDatetimePicker;

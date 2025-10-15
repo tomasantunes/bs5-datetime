@@ -10,19 +10,19 @@ Bootstrap 5 DateTime Picker in Vanilla JS (Written by AI)
 
 ```
 <link rel="stylesheet" href="bs5-datetime.min.css">
-<script src="locale-en-us.min.js"></script>
 <script src="bs5-datetime.min.js"></script>
 
 <div class="input-group">
-    <input id="dtp" class="form-control">
-    <button class="btn btn-outline-secondary" id="dtpToggle">
-        <i class="fa-solid fa-calendar-days"></i>
+    <input id="dtp" class="form-control" autocomplete="off">
+    <button class="btn btn-outline-secondary" id="dtpToggle" type="button" aria-label="Toggle datetime picker">
+    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
     </button>
 </div>
 
 <script>
     const input = document.getElementById('dtp');
     const toggle = document.getElementById('dtpToggle');
+    setDatetimeLocale("en-us");
     createDatetimeTemplate();
     const picker = createDatetimePicker(input, toggle);
 </script>
@@ -35,7 +35,7 @@ import DateTimePicker from 'DateTimePicker.jsx';
 
 const [datetime, setDatetime] = useState(null);
 
-<DateTimePicker defaultValue={datetime} onChange={setDatetime} />
+<DateTimePicker defaultValue={datetime} onChange={setDatetime} locale="en-us" />
 ```
 
 ## Options

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import './App.css'
-import './libs/locale-en-us.min.js';
 import DateTimePicker from './libs/DateTimePicker.jsx';
 
 function App() {
@@ -11,7 +10,7 @@ function App() {
       <div className="container">
         <div className="row">
           <div className="col-md-3">
-            <DateTimePicker value={datetime} onChange={setDatetime} />
+            <DateTimePicker value={datetime} onChange={setDatetime} locale="en-us" />
           </div>
         </div>
       </div>

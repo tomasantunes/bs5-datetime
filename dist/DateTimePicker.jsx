@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./bs5-datetime.min.css";
 
-export default function DateTimePicker({ value, onChange, defaultValue }) {
+export default function DateTimePicker({ value, onChange, defaultValue, locale }) {
   const inputRef = useRef(null);
   const toggleRef = useRef(null);
   const pickerRef = useRef(null);
@@ -10,11 +10,13 @@ export default function DateTimePicker({ value, onChange, defaultValue }) {
     (async () => {
       await import("./bs5-datetime.min.js");
 
+      if (window.setDatetimeLocale) window.setDatetimeLocale(locale || 'en-us');
+
       // create template once
       if (window.createDatetimeTemplate) window.createDatetimeTemplate();
-
       // initialize picker
       if (window.createDatetimePicker && inputRef.current && toggleRef.current) {
+        
         pickerRef.current = window.createDatetimePicker(
           inputRef.current,
           toggleRef.current,
