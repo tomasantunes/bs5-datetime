@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./bs5-datetime.min.css";
 
-export default function DateTimePicker({ value, onChange, defaultValue, locale }) {
+export default function DateTimePicker({ value, onChange, defaultValue, locale, options }) {
   const inputRef = useRef(null);
   const toggleRef = useRef(null);
   const pickerRef = useRef(null);
@@ -22,7 +22,8 @@ export default function DateTimePicker({ value, onChange, defaultValue, locale }
           toggleRef.current,
           (newValue) => {
             onChange && onChange(newValue);
-          }
+          },
+          options || {}
         );
 
         // set initial value
