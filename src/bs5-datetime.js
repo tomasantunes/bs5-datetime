@@ -220,7 +220,6 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'dtp-day btn btn-sm';
-      btn.style.width = '14.28%';
       btn.style.borderRadius = '0.35rem';
       btn.setAttribute('data-date', d.toISOString());
       btn.textContent = d.getDate();
