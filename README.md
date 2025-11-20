@@ -1,7 +1,7 @@
 # bs5-datetime
 Bootstrap 5 DateTime Picker in Vanilla JS (Written by AI)
 
-![Screenshot](https://i.imgur.com/0GmAqnz.png)
+![Screenshot](https://i.imgur.com/g010A7d.png)
 
 ## Dependencies
 
