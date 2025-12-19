@@ -63,3 +63,7 @@ The DateTimePicker has the following methods:
 - getDate()
 - setDate(d)
 - destroy()
+
+## Note
+
+AI was used to help with this project.
