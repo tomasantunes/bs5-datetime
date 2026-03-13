@@ -37,12 +37,12 @@ import DateTimePicker from 'DateTimePicker.jsx';
 
 const [datetime, setDatetime] = useState(null);
 
-<DateTimePicker defaultValue={datetime} onChange={setDatetime} locale="en-us" />
+<DateTimePicker defaultValue={datetime} value={datetime} onChange={setDatetime} locale="en-us" />
 ```
 
 ## Options
 
-The 4th argument of the createDatetimePicker function accepts the following options:
+The 5th argument of the createDatetimePicker function accepts the following options:
 
 ```
 {
