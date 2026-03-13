@@ -18,7 +18,8 @@ const LOCALES = {
     applyDatetime: "Apply",
     hours: "Hours",
     minutes: "Minutes",
-    weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    placeholder: "Select date and time"
   },
   'pt-pt': {
     monthNames: [
@@ -31,7 +32,8 @@ const LOCALES = {
     applyDatetime: "Aplicar",
     hours: "Horas",
     minutes: "Minutos",
-    weekDays: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+    weekDays: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    placeholder: "Selecione data e hora"
   }
 };
 
