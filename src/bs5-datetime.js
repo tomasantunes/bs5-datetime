@@ -133,9 +133,17 @@ function createTemplate() {
           <div class="p-2 border-top d-flex">
               <div class="dtp-time d-flex gap-2 align-items-center">
                   <label class="mb-0 small">${window.time}</label>
-                  <input type="text" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${window.hours}" style="width:4.5rem">
+                  <div class="dtp-time-unit input-group input-group-sm">
+                      <button type="button" class="btn btn-outline-secondary dtp-time-step" data-target="hour" data-step="-1" aria-label="${window.hours} -">-</button>
+                      <input type="text" class="form-control form-control-sm dtp-hour" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="${window.hours}">
+                      <button type="button" class="btn btn-outline-secondary dtp-time-step" data-target="hour" data-step="1" aria-label="${window.hours} +">+</button>
+                  </div>
                   <span>:</span>
-                  <input type="text" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${window.minutes}" style="width:4.5rem">
+                  <div class="dtp-time-unit input-group input-group-sm">
+                      <button type="button" class="btn btn-outline-secondary dtp-time-step" data-target="minute" data-step="-1" aria-label="${window.minutes} -">-</button>
+                      <input type="text" class="form-control form-control-sm dtp-minute" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="${window.minutes}">
+                      <button type="button" class="btn btn-outline-secondary dtp-time-step" data-target="minute" data-step="1" aria-label="${window.minutes} +">+</button>
+                  </div>
               </div>
               <div class="ms-auto p-2">
                   <button class="btn btn-sm btn-primary dtp-apply">${window.applyDatetime}</button>
@@ -174,6 +182,13 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     popup._prev.addEventListener('click', ()=>{ current.setMonth(current.getMonth()-1); render(); });
     popup._next.addEventListener('click', ()=>{ current.setMonth(current.getMonth()+1); render(); });
     popup._apply.addEventListener('click', applyAndClose);
+    popup.querySelectorAll('.dtp-time-step').forEach((btn) => {
+      btn.addEventListener('click', onTimeStep);
+    });
+    [popup._hour, popup._minute].forEach((el) => {
+      el.addEventListener('input', onTimeInput);
+      el.addEventListener('blur', normalizeTimeInput);
+    });
 
     // keyboard: Esc closes
     popup.addEventListener('keydown', (e)=>{
@@ -240,11 +255,11 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
 
     // set time inputs
     if(selected){
-      popup._hour.value = selected.getHours();
-      popup._minute.value = selected.getMinutes();
+      popup._hour.value = pad(selected.getHours());
+      popup._minute.value = pad(selected.getMinutes());
     } else {
-      popup._hour.value = current.getHours();
-      popup._minute.value = current.getMinutes();
+      popup._hour.value = pad(current.getHours());
+      popup._minute.value = pad(current.getMinutes());
     }
   }
 
@@ -265,10 +280,61 @@ function createDatetimePicker(input, toggle, onChangeCallback, options={}) {
     render();
   }
 
+  function getTimeInputValue(inputEl, min, max, fallback){
+    if (inputEl.value === '') return fallback;
+    const value = Number(inputEl.value);
+    if (Number.isNaN(value)) return fallback;
+    return clampNumber(value, min, max);
+  }
+
+  function ensureSelectedDate(){
+    if(!selected) {
+      selected = new Date(current.getFullYear(), current.getMonth(), current.getDate(), current.getHours(), current.getMinutes(), 0, 0);
+    }
+  }
+
+  function setSelectedTimeFromInputs(){
+    ensureSelectedDate();
+    const h = getTimeInputValue(popup._hour, 0, 23, selected.getHours());
+    const m = getTimeInputValue(popup._minute, 0, 59, selected.getMinutes());
+    selected.setHours(h, m, 0, 0);
+    current.setHours(h, m, 0, 0);
+  }
+
+  function onTimeInput(e){
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    setSelectedTimeFromInputs();
+  }
+
+  function normalizeTimeInput(e){
+    ensureSelectedDate();
+    const isHour = e.target === popup._hour;
+    const max = isHour ? 23 : 59;
+    const fallback = isHour ? selected.getHours() : selected.getMinutes();
+    e.target.value = pad(getTimeInputValue(e.target, 0, max, fallback));
+    setSelectedTimeFromInputs();
+  }
+
+  function onTimeStep(e){
+    e.preventDefault();
+    e.stopPropagation();
+    ensureSelectedDate();
+    const target = e.currentTarget.getAttribute('data-target');
+    const step = Number(e.currentTarget.getAttribute('data-step')) || 0;
+    const inputEl = target === 'hour' ? popup._hour : popup._minute;
+    const max = target === 'hour' ? 23 : 59;
+    const currentValue = getTimeInputValue(inputEl, 0, max, target === 'hour' ? selected.getHours() : selected.getMinutes());
+    const nextValue = (currentValue + step + max + 1) % (max + 1);
+    inputEl.value = pad(nextValue);
+    setSelectedTimeFromInputs();
+    inputEl.focus();
+  }
+
   function applyAndClose(){
     // read time inputs
-    const h = clampNumber(Number(popup._hour.value), 0, 23);
-    const m = clampNumber(Number(popup._minute.value), 0, 59);
+    const fallbackDate = selected || current;
+    const h = getTimeInputValue(popup._hour, 0, 23, fallbackDate.getHours());
+    const m = getTimeInputValue(popup._minute, 0, 59, fallbackDate.getMinutes());
     if(!selected) selected = new Date(current.getFullYear(), current.getMonth(), current.getDate(), h, m, 0, 0);
     selected.setHours(h, m, 0, 0);
     input.value = formatDate(selected, opt);

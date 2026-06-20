@@ -34,8 +34,16 @@
 .dtp-day.dtp-other-month{ background: transparent; }
 .dtp-day.dtp-today{ outline: 1px dashed rgba(0,0,0,0.12); }
 
-.dtp-time{ gap: 0.5rem; }
+.dtp-popup > .border-top.d-flex{ flex-wrap: wrap; gap: 0.5rem; }
+.dtp-time{ flex: 1 1 auto; gap: 0.5rem; flex-wrap: wrap; }
+.dtp-time-unit{ width: 6.75rem; }
+.dtp-time-unit .btn{ width: 2rem; padding-left: 0; padding-right: 0; }
+.dtp-time-unit .form-control{ padding-left: 0.25rem; padding-right: 0.25rem; text-align: center; }
+.dtp-popup .dtp-apply{ white-space: nowrap; }
 
 @media (max-width: 420px){
   .dtp-popup{ width: calc(100% - 20px); }
+  .dtp-time{ gap: 0.35rem; }
+  .dtp-time-unit{ width: 6.25rem; }
+  .dtp-time-unit .btn{ width: 1.75rem; }
 }
