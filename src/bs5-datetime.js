@@ -133,9 +133,9 @@ function createTemplate() {
           <div class="p-2 border-top d-flex">
               <div class="dtp-time d-flex gap-2 align-items-center">
                   <label class="mb-0 small">${window.time}</label>
-                  <input type="number" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${window.hours}" style="width:4.5rem">
+                  <input type="text" class="form-control form-control-sm dtp-hour" min="0" max="23" inputmode="numeric" aria-label="${window.hours}" style="width:4.5rem">
                   <span>:</span>
-                  <input type="number" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${window.minutes}" style="width:4.5rem">
+                  <input type="text" class="form-control form-control-sm dtp-minute" min="0" max="59" inputmode="numeric" aria-label="${window.minutes}" style="width:4.5rem">
               </div>
               <div class="ms-auto p-2">
                   <button class="btn btn-sm btn-primary dtp-apply">${window.applyDatetime}</button>
